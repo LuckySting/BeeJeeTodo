@@ -1,10 +1,23 @@
 <template>
-  <div></div>
+  <div>
+    {{ counter }}
+    <button @click="increment">inc</button>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  methods: {
+    increment() {
+      this.$store.commit('todoStore/counterIncrement')
+    }
+  },
+  computed: {
+    counter() {
+      return this.$store.getters['todoStore/counterGetter']
+    }
+  }
 }
 </script>
 
