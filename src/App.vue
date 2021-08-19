@@ -2,7 +2,7 @@
   <div class="flex flex-col items-center w-full h-full py-5">
     <div class="xl:w-3/4 lg:w-5/6 sm:w-full sm:px-5">
       <div class="border border-gray-400 w-full p-5 relative">
-        <div class="todos-overlay" v-if="loading"></div>
+        <div class="loading-overlay" v-if="loadingTodos"></div>
         <div class="border border-gray-400 w-full" style="min-height: 400px">
           <table class="w-full">
             <colgroup>
@@ -74,8 +74,51 @@
           </div>
         </div>
       </div>
-      <div>
-        Тут будет форма
+      <div class="border border-gray-400 border-t-0 p-5 relative">
+        <div class="loading-overlay" v-if="loadingNewTodo"></div>
+        <form @submit.prevent="createTodo">
+          <div class="flex flex-col w-full">
+            <div>
+              <label>
+                <input
+                    type="text"
+                    class="outline-none border border-gray-400 p-2 w-full border-b-0"
+                    placeholder="Имя пользователя"
+                    v-model="formData.username"
+                >
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                    type="text"
+                    class="outline-none border border-gray-400 p-2 w-full border-b-0"
+                    placeholder="E-mail"
+                    v-model="formData.email"
+                >
+              </label>
+            </div>
+            <div>
+              <label>
+              <textarea
+                  class="outline-none border border-gray-400 p-2 w-full resize-none border-b-0"
+                  placeholder="Текст задачи"
+                  style="height: 100px;"
+                  v-model="formData.text"
+              />
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                    type="submit"
+                    class="outline-none border border-gray-400 p-2 w-full cursor-pointer"
+                    style="margin-top: -6px;"
+                >
+              </label>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -88,7 +131,13 @@ export default {
   name: 'App',
   data() {
     return {
-      loading: true
+      loadingTodos: false,
+      loadingNewTodo: false,
+      formData: {
+        username: '',
+        email: '',
+        text: ''
+      }
     }
   },
   created() {
@@ -109,9 +158,30 @@ export default {
     toggleSort(sortField) {
       this.$store.dispatch('todo/toggleSort', sortField)
     },
+    validateNewTodoForm() {
+      return true
+    },
+    clearNewTodoForm() {
+      this.formData.username = ''
+      this.formData.email = ''
+      this.formData.text = ''
+    },
+    async createTodo() {
+      if (!this.validateNewTodoForm()) return
+      try {
+        this.loadingNewTodo = true
+        await this.$store.dispatch('todo/createTodo', this.formData)
+        await this.loadTodos()
+        this.clearNewTodoForm()
+      } catch {
+        console.log('fail to create')
+      } finally {
+        this.loadingNewTodo = false
+      }
+    },
     async loadTodos() {
       try {
-        this.loading = true
+        this.loadingTodos = true
         await this.$store.dispatch('todo/fetchTodos')
         if (this.page > this.totalPages) {
           this.$store.commit('todo/pageMutation', this.totalPages)
@@ -120,7 +190,7 @@ export default {
       } catch {
         console.log('fail to load')
       } finally {
-        this.loading = false
+        this.loadingTodos = false
       }
     }
   },
@@ -172,7 +242,7 @@ body {
   @apply border-r-0
 }
 
-.todos-overlay {
+.loading-overlay {
   @apply bg-gray-400 absolute top-5 left-5 right-5 bottom-5 z-50 opacity-30;
 }
 </style>
