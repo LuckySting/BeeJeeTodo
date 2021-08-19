@@ -1,9 +1,9 @@
 export default function () {
   return {
     todos: [],
-    sortField: '',
-    sortDirection: '',
-    page: 0,
+    sortField: null,
+    sortDirection: null,
+    page: null,
     totalTodosCount: 1
   }
 }

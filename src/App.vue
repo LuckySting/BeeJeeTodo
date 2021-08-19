@@ -126,7 +126,7 @@
                   <input type="checkbox" :checked="todo.status >= 10" @click.prevent="toggleTodoCompletion(todo)">
                 </label>
               </td>
-              <td class="data-table-cell">{{ todo.username }}</td>
+              <td class="data-table-cell py-2">{{ todo.username }}</td>
               <td class="data-table-cell">{{ todo.email }}</td>
               <td class="data-table-cell text-left px-2" v-if="isAuthed">
                 <label>
@@ -140,8 +140,8 @@
               <td class="data-table-cell text-left px-2" v-else>
                 {{ todo.text }}
               </td>
-              <td class="data-table-cell text-left px-2">
-                <div class="flex flex-row justify-between py-2">
+              <td class="data-table-cell text-left px-2 py-2">
+                <div class="flex flex-row justify-between">
                   <span
                       v-if="todo.status % 2 === 1"
                       class="bg-yellow-300"
@@ -293,20 +293,20 @@ export default {
     },
     validateNewTodoForm() {
       this.clearNewTodoFormValidationErrors()
-      if (this.newTodoFormData.username === '') {
-        this.newTodoFormValidationErrors.username = 'Обязательное поле'
-        return false
-      }
       if (this.newTodoFormData.email === '') {
         this.newTodoFormValidationErrors.email = 'Обязательное поле'
         return false
       }
-      if (this.newTodoFormData.text === '') {
-        this.newTodoFormValidationErrors.text = 'Обязательное поле'
-        return false
-      }
       if (!validateEmail(this.newTodoFormData.email)) {
         this.newTodoFormValidationErrors.email = 'Неверный формат email'
+        return false
+      }
+      if (this.newTodoFormData.username === '') {
+        this.newTodoFormValidationErrors.username = 'Обязательное поле'
+        return false
+      }
+      if (this.newTodoFormData.text === '') {
+        this.newTodoFormValidationErrors.text = 'Обязательное поле'
         return false
       }
       return true
@@ -328,6 +328,7 @@ export default {
         await this.$store.dispatch('todo/createTodo', this.newTodoFormData)
         await this.loadTodos()
         this.clearNewTodoForm()
+        alert('Задача создана')
       } catch {
         alert('Не удалось создать задачу')
       } finally {

@@ -17,14 +17,20 @@ export async function fetchTodos(context) {
   const sortField = context.getters.sortFieldGetter
   const sortDirection = context.getters.sortDirectionGetter
   const page = context.getters.pageGetter
-  const totalTodosCount = await todoRepository.fetchTodo(sortField, sortDirection, page)
+  let totalTodosCount = await todoRepository.fetchTodo(sortField, sortDirection, page)
+  if (totalTodosCount < 1) {
+    totalTodosCount = 1
+  }
   context.commit('totalTodosCountMutation', totalTodosCount)
 }
 
 export function loadParamsFromDocumentUrl(context) {
   const sortField = getParamFromDocumentUrl('sort-field', '')
   const sortDirection = getParamFromDocumentUrl('sort-direction', '')
-  const page = getParamFromDocumentUrl('page', 1)
+  let page = Number(getParamFromDocumentUrl('page', 1))
+  if (page < 1) {
+    page = 1
+  }
   context.commit('sortFieldMutation', sortField)
   context.commit('sortDirectionMutation', sortDirection)
   context.commit('pageMutation', page)
