@@ -49,3 +49,7 @@ export function toggleSort(context, sortField) {
 export async function createTodo(context, {username, email, text}) {
   await todoRepository.createTodo(username, email, text)
 }
+
+export async function updateTodo(context, {todoId, text, status}) {
+  await todoRepository.updateTodo(todoId, text, status)
+}

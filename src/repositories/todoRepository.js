@@ -48,3 +48,23 @@ export async function createTodo(username, email, text) {
     throw Error
   }
 }
+
+export async function updateTodo(todoId, text, status) {
+  const formData = new FormData()
+  if (text !== null) {
+    formData.append('text', text)
+  }
+  if (status !== null) {
+    formData.append('status', status)
+  }
+  const response = await api.adminAxios.post(`/edit/${todoId}`, formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+  )
+  if (response.data.status !== 'ok') {
+    throw Error
+  }
+}

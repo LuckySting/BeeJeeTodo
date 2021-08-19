@@ -1,18 +1,89 @@
 <template>
   <div class="flex flex-col items-center w-full h-full py-5">
     <div class="xl:w-3/4 lg:w-5/6 sm:w-full sm:px-5">
+      <div class="border border-gray-400 border-b-0 p-5 relative">
+        <template v-if="isAuthed">
+          <div class="flex flex-row items-baseline">
+            <div
+                class="flex-grow p-2 border border-gray-400"
+            >
+              Вы авторизованы как Администратор
+            </div>
+            <div>
+              <label>
+                <input
+                    type="submit"
+                    class="outline-none  border border-gray-400 border-l-0 py-2 px-10 w-full cursor-pointer"
+                    style="margin-top: -6px;"
+                    value="Выйти"
+                    @click="logout"
+                >
+              </label>
+            </div>
+          </div>
+        </template>
+        <template v-else>
+          <div class="loading-overlay" v-if="loadingAdminEnter"></div>
+          <form @submit.prevent="login">
+            <div class="flex flex-row items-baseline">
+              <div class="border border-gray-400 p-2 w-full relative">
+                <label>
+                  <input
+                      type="text"
+                      class="outline-none w-full"
+                      placeholder="Имя пользователя"
+                      v-model="adminEnterFormData.username"
+                  >
+                  <div
+                      class="absolute top-0 bottom-0 right-0 mr-5 text-red-400 flex flex-row items-center pointer-events-none">
+                    <div>{{ adminEnterFormValidationErrors.username }}</div>
+                  </div>
+                </label>
+              </div>
+              <div class="border border-gray-400 p-2 w-full border-l-0 relative">
+                <label>
+                  <input
+                      type="password"
+                      class="outline-none w-full"
+                      placeholder="Пароль"
+                      v-model="adminEnterFormData.password"
+                  >
+                  <div
+                      class="absolute top-0 bottom-0 right-0 mr-5 text-red-400 flex flex-row items-center pointer-events-none">
+                    <div>{{ adminEnterFormValidationErrors.password }}</div>
+                  </div>
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                      type="submit"
+                      class="outline-none border border-gray-400 border-l-0 p-2 w-full cursor-pointer"
+                      style="margin-top: -6px;"
+                      value="Войти как администратор"
+                  >
+                </label>
+              </div>
+            </div>
+          </form>
+        </template>
+      </div>
       <div class="border border-gray-400 w-full p-5 relative">
         <div class="loading-overlay" v-if="loadingTodos"></div>
         <div class="border border-gray-400 w-full" style="min-height: 400px">
           <table class="w-full">
             <colgroup>
+              <col style="width: 100px" v-if="isAuthed">
               <col style="width: 200px">
               <col style="width: 200px">
               <col style="min-width: 120px">
-              <col style="width: 200px">
+              <col style="width: 125px">
             </colgroup>
             <thead>
             <tr style="max-height: 32px;">
+              <td class="data-table-cell" v-if="isAuthed">
+                Выполнено
+              </td>
               <td
                   class="data-table-header-cell cursor-pointer"
                   @click="toggleSort('username')"
@@ -50,10 +121,39 @@
                 :key="todo.id"
                 class=""
             >
+              <td class="data-table-cell" v-if="isAuthed">
+                <label>
+                  <input type="checkbox" :checked="todo.status >= 10" @click.prevent="toggleTodoCompletion(todo)">
+                </label>
+              </td>
               <td class="data-table-cell">{{ todo.username }}</td>
               <td class="data-table-cell">{{ todo.email }}</td>
-              <td class="data-table-cell text-left px-2">{{ todo.text }}</td>
-              <td class="data-table-cell text-left px-2">{{ todo.status }}</td>
+              <td class="data-table-cell text-left px-2" v-if="isAuthed">
+                <label>
+                  <textarea
+                      :value="todo.text"
+                      class="w-full outline-none"
+                      @change="changeTodoText(todo, $event)"
+                  />
+                </label>
+              </td>
+              <td class="data-table-cell text-left px-2" v-else>
+                {{ todo.text }}
+              </td>
+              <td class="data-table-cell text-left px-2">
+                <div class="flex flex-row justify-between py-2">
+                  <span
+                      v-if="todo.status % 2 === 1"
+                      class="bg-yellow-300"
+                      style="border-radius: 30px; padding: 5px 10px"
+                  >ред</span>
+                  <span
+                      v-if="todo.status >= 10"
+                      class="bg-green-300"
+                      style="border-radius: 30px; padding: 5px 10px"
+                  >вып</span>
+                </div>
+              </td>
             </tr>
             </tbody>
           </table>
@@ -84,12 +184,12 @@
                     type="text"
                     class="outline-none w-full"
                     placeholder="Имя пользователя"
-                    v-model="formData.username"
+                    v-model="newTodoFormData.username"
                 >
               </label>
               <div
                   class="absolute top-0 bottom-0 right-0 mr-5 text-red-400 flex flex-row items-center pointer-events-none">
-                <div>{{ formValidationErrors.username }}</div>
+                <div>{{ newTodoFormValidationErrors.username }}</div>
               </div>
             </div>
             <div class="border border-gray-400 p-2 w-full border-b-0 relative">
@@ -98,11 +198,11 @@
                     type="text"
                     class="outline-none w-full"
                     placeholder="E-mail"
-                    v-model="formData.email"
+                    v-model="newTodoFormData.email"
                 >
                 <div
                     class="absolute top-0 bottom-0 right-0 mr-5 text-red-400 flex flex-row items-center pointer-events-none">
-                  <div>{{ formValidationErrors.email }}</div>
+                  <div>{{ newTodoFormValidationErrors.email }}</div>
                 </div>
               </label>
             </div>
@@ -112,11 +212,11 @@
                   class="outline-none w-full resize-none"
                   placeholder="Текст задачи"
                   style="height: 100px;"
-                  v-model="formData.text"
+                  v-model="newTodoFormData.text"
               />
                 <div
                     class="absolute top-0 bottom-0 right-0 mr-5 text-red-400 flex flex-row items-center pointer-events-none">
-                  <div>{{ formValidationErrors.text }}</div>
+                  <div>{{ newTodoFormValidationErrors.text }}</div>
                 </div>
               </label>
             </div>
@@ -126,6 +226,7 @@
                     type="submit"
                     class="outline-none border border-gray-400 p-2 w-full cursor-pointer"
                     style="margin-top: -6px;"
+                    value="Создать задачу"
                 >
               </label>
             </div>
@@ -150,21 +251,31 @@ export default {
     return {
       loadingTodos: false,
       loadingNewTodo: false,
-      formData: {
+      loadingAdminEnter: false,
+      newTodoFormData: {
         username: '',
         email: '',
         text: ''
       },
-      formValidationErrors: {
+      newTodoFormValidationErrors: {
         username: '',
         email: '',
         text: ''
+      },
+      adminEnterFormData: {
+        username: '',
+        password: ''
+      },
+      adminEnterFormValidationErrors: {
+        username: '',
+        password: ''
       }
     }
   },
   created() {
     this.$store.dispatch('todo/subscribeToTodos')
     this.$store.dispatch('todo/loadParamsFromDocumentUrl')
+    this.$store.dispatch('auth/checkAuthed')
   },
   methods: {
     nextPage() {
@@ -181,44 +292,44 @@ export default {
       this.$store.dispatch('todo/toggleSort', sortField)
     },
     validateNewTodoForm() {
-      this.clearValidationErrors()
-      if (this.formData.username === '') {
-        this.formValidationErrors.username = 'Обязательное поле'
+      this.clearNewTodoFormValidationErrors()
+      if (this.newTodoFormData.username === '') {
+        this.newTodoFormValidationErrors.username = 'Обязательное поле'
         return false
       }
-      if (this.formData.email === '') {
-        this.formValidationErrors.email = 'Обязательное поле'
+      if (this.newTodoFormData.email === '') {
+        this.newTodoFormValidationErrors.email = 'Обязательное поле'
         return false
       }
-      if (this.formData.text === '') {
-        this.formValidationErrors.text = 'Обязательное поле'
+      if (this.newTodoFormData.text === '') {
+        this.newTodoFormValidationErrors.text = 'Обязательное поле'
         return false
       }
-      if (!validateEmail(this.formData.email)) {
-        this.formValidationErrors.email = 'Неверный формат email'
+      if (!validateEmail(this.newTodoFormData.email)) {
+        this.newTodoFormValidationErrors.email = 'Неверный формат email'
         return false
       }
       return true
     },
-    clearValidationErrors() {
-      this.formValidationErrors.username = ''
-      this.formValidationErrors.email = ''
-      this.formValidationErrors.text = ''
+    clearNewTodoFormValidationErrors() {
+      this.newTodoFormValidationErrors.username = ''
+      this.newTodoFormValidationErrors.email = ''
+      this.newTodoFormValidationErrors.text = ''
     },
     clearNewTodoForm() {
-      this.formData.username = ''
-      this.formData.email = ''
-      this.formData.text = ''
+      this.newTodoFormData.username = ''
+      this.newTodoFormData.email = ''
+      this.newTodoFormData.text = ''
     },
     async createTodo() {
       if (!this.validateNewTodoForm()) return
       try {
         this.loadingNewTodo = true
-        await this.$store.dispatch('todo/createTodo', this.formData)
+        await this.$store.dispatch('todo/createTodo', this.newTodoFormData)
         await this.loadTodos()
         this.clearNewTodoForm()
       } catch {
-        console.log('fail to create')
+        alert('Не удалось создать задачу')
       } finally {
         this.loadingNewTodo = false
       }
@@ -232,9 +343,87 @@ export default {
           await this.$store.dispatch('todo/fetchTodos')
         }
       } catch {
-        console.log('fail to load')
+        alert('Не удалось загрузить задачи')
       } finally {
         this.loadingTodos = false
+      }
+    },
+    validateAdminEnterForm() {
+      this.clearAdminEnterFormValidationErrors()
+      if (this.adminEnterFormData.username === '') {
+        this.adminEnterFormValidationErrors.username = 'Обязательное поле'
+        return false
+      }
+      if (this.adminEnterFormData.password === '') {
+        this.adminEnterFormValidationErrors.password = 'Обязательное поле'
+        return false
+      }
+      return true
+    },
+    clearAdminEnterFormValidationErrors() {
+      this.adminEnterFormValidationErrors.username = ''
+      this.adminEnterFormValidationErrors.password = ''
+    },
+    clearAdminEnterForm() {
+      this.adminEnterFormData.username = ''
+      this.adminEnterFormData.password = ''
+    },
+    async login() {
+      if (!this.validateAdminEnterForm()) return
+      try {
+        this.loadingAdminEnter = true
+        await this.$store.dispatch('auth/login', this.adminEnterFormData)
+      } catch {
+        alert('Неверный логин или пароль')
+      } finally {
+        this.clearAdminEnterForm()
+        this.loadingAdminEnter = false
+      }
+    },
+    logout() {
+      this.$store.dispatch('auth/logout')
+    },
+    async toggleTodoCompletion(todo) {
+      let newStatus = todo.status
+      if (todo.status < 10) {
+        newStatus += 10
+      } else {
+        newStatus -= 10
+      }
+      try {
+        this.loadingTodos = true
+        this.loadingNewTodo = true
+        await this.$store.dispatch('todo/updateTodo', {
+          todoId: todo.id,
+          status: newStatus,
+          text: null
+        })
+        await this.loadTodos()
+      } catch {
+        alert('Вы не авторизованы')
+        this.logout()
+      } finally {
+        this.loadingTodos = false
+        this.loadingNewTodo = false
+      }
+    },
+    async changeTodoText(todo, event) {
+      const newStatus = todo % 2 === 0 ? todo.status : todo.status + 1
+      try {
+        this.loadingTodos = true
+        this.loadingNewTodo = true
+        await this.$store.dispatch('todo/updateTodo', {
+          todoId: todo.id,
+          status: newStatus,
+          text: event.target.value
+        })
+        await this.loadTodos()
+      } catch {
+        alert('Вы не авторизованы')
+        this.logout()
+      } finally {
+        this.loadingTodos = false
+        this.loadingNewTodo = false
       }
     }
   },
@@ -243,7 +432,8 @@ export default {
       todos: 'todo/todosGetter',
       totalTodosCount: 'todo/totalTodosCountGetter',
       sortField: 'todo/sortFieldGetter',
-      sortDirection: 'todo/sortDirectionGetter'
+      sortDirection: 'todo/sortDirectionGetter',
+      isAuthed: 'auth/isAuthedGetter'
     }),
     page() {
       return Number(this.$store.getters['todo/pageGetter'])
