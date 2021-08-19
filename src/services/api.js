@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const apiAddress = 'https://uxcandy.com/~shapoval/test-task-backend/v2'
-const developerParam = 'TretyakRoman3'
+const developerParam = 'TretyakRomanDmitrievich'
 
 export const commonAxios = axios.create({
   baseURL: apiAddress
