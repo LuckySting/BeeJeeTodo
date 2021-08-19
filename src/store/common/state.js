@@ -1,3 +1,5 @@
 export default function () {
-  return {}
+  return {
+    currentUrl: window.location.href
+  }
 }

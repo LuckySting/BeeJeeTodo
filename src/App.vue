@@ -1,7 +1,7 @@
 <template>
   <div>
-    {{ counter }}
-    <button @click="increment">inc</button>
+    {{ currentUrl }}
+    <button class="bg-green-300" @click="act">test</button>
   </div>
 </template>
 
@@ -9,13 +9,16 @@
 export default {
   name: 'App',
   methods: {
-    increment() {
-      this.$store.commit('todo/counterIncrement')
+    act() {
+      this.$store.commit('currentUrlMutation', this.currentUrl + 'a')
     }
   },
   computed: {
     counter() {
       return this.$store.getters['todo/counterGetter']
+    },
+    currentUrl() {
+      return this.$store.getters.currentUrlGetter
     }
   }
 }
