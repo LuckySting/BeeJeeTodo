@@ -1,11 +1,13 @@
 import {createStore} from 'vuex'
-import todoStore from './todoStore'
+import todo from './todo'
+import common from './common'
 
 export default createStore({
+  ...common,
   modules: {
     todoStore: {
       namespaced: true,
-      ...todoStore
+      ...todo
     }
   }
 })

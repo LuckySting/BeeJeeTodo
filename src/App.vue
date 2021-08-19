@@ -10,12 +10,12 @@ export default {
   name: 'App',
   methods: {
     increment() {
-      this.$store.commit('todoStore/counterIncrement')
+      this.$store.commit('todo/counterIncrement')
     }
   },
   computed: {
     counter() {
-      return this.$store.getters['todoStore/counterGetter']
+      return this.$store.getters['todo/counterGetter']
     }
   }
 }
