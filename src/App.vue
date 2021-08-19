@@ -78,34 +78,46 @@
         <div class="loading-overlay" v-if="loadingNewTodo"></div>
         <form @submit.prevent="createTodo">
           <div class="flex flex-col w-full">
-            <div>
+            <div class="border border-gray-400 p-2 w-full border-b-0 relative">
               <label>
                 <input
                     type="text"
-                    class="outline-none border border-gray-400 p-2 w-full border-b-0"
+                    class="outline-none w-full"
                     placeholder="Имя пользователя"
                     v-model="formData.username"
                 >
               </label>
+              <div
+                  class="absolute top-0 bottom-0 right-0 mr-5 text-red-400 flex flex-row items-center pointer-events-none">
+                <div>{{ formValidationErrors.username }}</div>
+              </div>
             </div>
-            <div>
+            <div class="border border-gray-400 p-2 w-full border-b-0 relative">
               <label>
                 <input
                     type="text"
-                    class="outline-none border border-gray-400 p-2 w-full border-b-0"
+                    class="outline-none w-full"
                     placeholder="E-mail"
                     v-model="formData.email"
                 >
+                <div
+                    class="absolute top-0 bottom-0 right-0 mr-5 text-red-400 flex flex-row items-center pointer-events-none">
+                  <div>{{ formValidationErrors.email }}</div>
+                </div>
               </label>
             </div>
-            <div>
+            <div class="border border-gray-400 p-2 w-full border-b-0 relative">
               <label>
               <textarea
-                  class="outline-none border border-gray-400 p-2 w-full resize-none border-b-0"
+                  class="outline-none w-full resize-none"
                   placeholder="Текст задачи"
                   style="height: 100px;"
                   v-model="formData.text"
               />
+                <div
+                    class="absolute top-0 bottom-0 right-0 mr-5 text-red-400 flex flex-row items-center pointer-events-none">
+                  <div>{{ formValidationErrors.text }}</div>
+                </div>
               </label>
             </div>
             <div>
@@ -127,6 +139,11 @@
 <script>
 import {mapGetters} from 'vuex'
 
+function validateEmail(email) {
+  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(String(email).toLowerCase())
+}
+
 export default {
   name: 'App',
   data() {
@@ -134,6 +151,11 @@ export default {
       loadingTodos: false,
       loadingNewTodo: false,
       formData: {
+        username: '',
+        email: '',
+        text: ''
+      },
+      formValidationErrors: {
         username: '',
         email: '',
         text: ''
@@ -159,7 +181,29 @@ export default {
       this.$store.dispatch('todo/toggleSort', sortField)
     },
     validateNewTodoForm() {
+      this.clearValidationErrors()
+      if (this.formData.username === '') {
+        this.formValidationErrors.username = 'Обязательное поле'
+        return false
+      }
+      if (this.formData.email === '') {
+        this.formValidationErrors.email = 'Обязательное поле'
+        return false
+      }
+      if (this.formData.text === '') {
+        this.formValidationErrors.text = 'Обязательное поле'
+        return false
+      }
+      if (!validateEmail(this.formData.email)) {
+        this.formValidationErrors.email = 'Неверный формат email'
+        return false
+      }
       return true
+    },
+    clearValidationErrors() {
+      this.formValidationErrors.username = ''
+      this.formValidationErrors.email = ''
+      this.formValidationErrors.text = ''
     },
     clearNewTodoForm() {
       this.formData.username = ''
