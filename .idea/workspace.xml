@@ -1,5 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2b3d919e-4360-4e39-af73-54b83daab9de" name="Default Changelist" comment="Add common store">
+      <change afterPath="$PROJECT_DIR$/src/tools/urlUtils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/common/actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/todoRepository.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/common/getters.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/common/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/common/mutations.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/common/state.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/todo/actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/todo/actions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/todo/getters.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/todo/getters.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/todo/mutations.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/todo/mutations.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/todo/state.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/todo/state.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/store" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.JavaScript" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/store" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
@@ -16,5 +61,40 @@
         <item itemvalue="npm.dev" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <task id="LOCAL-00001" summary="Add vuex">
+      <created>1629367721190</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1629367721190</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Add common store">
+      <created>1629367862959</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1629367862959</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Make url part of store">
+      <created>1629368653046</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1629368653046</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Add vuex" />
+    <MESSAGE value="Add common store" />
+    <MESSAGE value="Make url part of store" />
+    <option name="LAST_COMMIT_MESSAGE" value="Make url part of store" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
